@@ -22,6 +22,8 @@ namespace BVM
 		private:
 			Frame* _rootFrame;
 			Frame* _currentFrame;
+
+			void _popFrame();
 		};
 	}
 }

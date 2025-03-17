@@ -1,4 +1,3 @@
-#include "CodeObject.h"
 #include <BVM/Object/CodeObject.h>
 
 namespace BVM

@@ -1,4 +1,3 @@
-#include "Bytecode.h"
 #include <BVM/Core/Bytecode.h>
 
 namespace BVM
@@ -19,6 +18,9 @@ namespace BVM
 
 		const Instruction& Bytecode::operator[](size_t index) const
 		{
+			if (index > length())
+				return Instruction(InstructionType::HALT, NULL); // Return a HALT instruction if index is out of range 
+
 			return _bytecode[index];
 		}
 	}

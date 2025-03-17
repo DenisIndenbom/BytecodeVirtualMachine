@@ -1,3 +1,4 @@
+#include <BVM/Core/Instruction.h>
 #include <BVM/Core/VM.h>
 
 namespace BVM
@@ -10,26 +11,43 @@ namespace BVM
 		{
 			do
 			{
-				Frame* prev = _currentFrame->gerPrevFrame();
-
-				delete _currentFrame;
-
-				_currentFrame = prev;
-
-			} while (_currentFrame != _rootFrame)
+				_popFrame();
+			} while (_currentFrame != _rootFrame);
 		}
 
 		void VM::run()
 		{
-			while (true)
+			while (_currentFrame != nullptr)
 			{
-				// run virtual machine
+				const Instruction& instrunction = _currentFrame->next();
+
+				if (instrunction.type == InstructionType::HALT)
+				{
+					_popFrame();
+
+					continue;
+				}
+
+				executeInstruction(instrunction);
 			}
 		}
 
 		void VM::executeInstruction(const Instruction& instruction)
 		{
-			// Not implemented yet
+			switch (instruction.type)
+			{
+			default:
+				break;
+			}
+		}
+
+		void VM::_popFrame()
+		{
+			Frame* prev = _currentFrame->getPrevFrame();
+
+			delete _currentFrame;
+
+			_currentFrame = prev;
 		}
 
 

@@ -9,7 +9,7 @@ namespace BVM
 		class Int : IObject
 		{
 		public:
-			explicit Int(float value) : _value(value) {}
+			explicit Int(int64_t value) : _value(value) {}
 
 			int64_t getValue();
 

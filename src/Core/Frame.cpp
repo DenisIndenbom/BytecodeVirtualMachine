@@ -24,6 +24,11 @@ namespace BVM
 			return _code;
 		}
 
+		void Frame::setPrevFrame(Frame* frame)
+		{
+			_prevFrame = frame;
+		}
+
 		// Stack operations
 		void Frame::push(std::shared_ptr<Object::IObject> obj)
 		{

@@ -9,26 +9,15 @@ namespace BVM
 
 		VM::~VM()
 		{
-			do
-			{
+			while (_currentFrame != nullptr)
 				_popFrame();
-			} while (_currentFrame != _rootFrame);
 		}
 
 		void VM::run()
 		{
 			while (_currentFrame != nullptr)
 			{
-				const Instruction& instrunction = _currentFrame->next();
-
-				if (instrunction.type == InstructionType::HALT)
-				{
-					_popFrame();
-
-					continue;
-				}
-
-				executeInstruction(instrunction);
+				executeInstruction(_currentFrame->next());
 			}
 		}
 
@@ -36,6 +25,9 @@ namespace BVM
 		{
 			switch (instruction.type)
 			{
+			case InstructionType::HALT:
+				_popFrame();
+				break;
 			default:
 				break;
 			}
@@ -50,6 +42,11 @@ namespace BVM
 			_currentFrame = prev;
 		}
 
+		void VM::_pushFrame(Frame* frame)
+		{
+			frame->setPrevFrame(_currentFrame);
+			_currentFrame = frame;
+		}
 
 	}
 }

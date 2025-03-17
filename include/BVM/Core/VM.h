@@ -24,6 +24,7 @@ namespace BVM
 			Frame* _currentFrame;
 
 			void _popFrame();
+			void _pushFrame(Frame* frame);
 		};
 	}
 }

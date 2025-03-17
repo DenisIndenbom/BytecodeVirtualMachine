@@ -22,6 +22,9 @@ namespace BVM
 			Frame* getPrevFrame();
 			std::shared_ptr<Object::CodeObject> getCode();
 
+			// Setters
+			void setPrevFrame(Frame* frame);
+
 			// Stack operations
 			void push(std::shared_ptr<Object::IObject> obj);
 			std::shared_ptr<Object::IObject> top();

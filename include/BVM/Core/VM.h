@@ -20,9 +20,14 @@ namespace BVM
 			void run();
 			void executeInstruction(const Instruction& instruction);
 		private:
+			// VM frames
 			Frame* _rootFrame;
 			Frame* _currentFrame;
 
+			// VM states
+			bool _isRunning;
+
+			// Framge management
 			void _popFrame();
 			void _pushFrame(Frame* frame);
 		};

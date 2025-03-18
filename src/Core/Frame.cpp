@@ -35,6 +35,11 @@ namespace BVM
 			_stack.push(obj);
 		}
 
+		void Frame::pushConst(size_t index)
+		{
+			_stack.push(_code->getConstant(index));
+		}
+
 		std::shared_ptr<Object::IObject> Frame::top()
 		{
 			return _stack.top();

@@ -27,6 +27,8 @@ namespace BVM
 
 			// Stack operations
 			void push(std::shared_ptr<Object::IObject> obj);
+			void pushConst(size_t index);
+
 			std::shared_ptr<Object::IObject> top();
 			std::shared_ptr<Object::IObject> pop();
 

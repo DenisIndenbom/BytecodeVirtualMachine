@@ -1,5 +1,9 @@
 #include <BVM/Core/Bytecode.h>
 
+#include <string>
+
+#include <BVM/Core/Exceptions.h>
+
 namespace BVM
 {
 	namespace Core
@@ -18,8 +22,8 @@ namespace BVM
 
 		const Instruction& Bytecode::operator[](size_t index) const
 		{
-			if (index > length())
-				return Instruction(InstructionType::HALT, NULL); // Return a HALT instruction if index is out of range 
+			if (index >= length())
+				throw InstructionsOverException("The instruction with the " + std::to_string(index) + " index was not found");
 
 			return _bytecode[index];
 		}

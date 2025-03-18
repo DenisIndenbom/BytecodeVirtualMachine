@@ -26,11 +26,15 @@ namespace BVM
 			void setPrevFrame(Frame* frame);
 
 			// Stack operations
-			void push(std::shared_ptr<Object::IObject> obj);
+			void push(const std::shared_ptr<Object::IObject>& obj);
 			void pushConst(size_t index);
 
 			std::shared_ptr<Object::IObject> top();
 			std::shared_ptr<Object::IObject> pop();
+
+			// Locals operations
+			void load(size_t index);
+			void store(const std::shared_ptr<Object::IObject>& obj, size_t index);
 
 			// Code object operations
 			const Instruction& next();
@@ -41,7 +45,8 @@ namespace BVM
 			std::shared_ptr<Object::CodeObject> _code; // The shared pointer to code object which is executed in this frame
 			size_t _depth; // The frame call depth
 
-			std::stack<std::shared_ptr<Object::IObject>> _stack;
+			std::stack<std::shared_ptr<Object::IObject>> _stack; // Stack of objects in the frame
+			std::unique_ptr<std::shared_ptr<Object::IObject>[]> _locals; // Array of local variables in the frame
 
 			size_t _index; // Current instruction index
 		};

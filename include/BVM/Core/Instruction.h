@@ -8,12 +8,12 @@ namespace BVM
 		enum class InstructionType
 		{
 			// Arithmetic
-			PUSH_CONST, // Push a constant value (e.g., number, string, object) onto the stack
-			POP,        // Remove and discard the top value from the stack
 			ADD,        // Pop the top two values, add them, and push the result onto the stack
 			SUB,        // Pop the top two values, subtract the second from the first, and push the result
 			MUL,        // Pop the top two values, multiply them, and push the result onto the stack
 			DIV,        // Pop the top two values, divide the first by the second, and push the result
+			MOD,		// Pop the top two values, mod the first by the second, and push the result
+			IDIV,		// Pop the top two values, divide integers the first by the second, and push the result
 
 			// Control Flow
 			JUMP,       // Jump to a specific instruction
@@ -23,6 +23,8 @@ namespace BVM
 			RETURN,     // Return from a function
 
 			// Stack Manipulation
+			PUSH_CONST, // Push a constant value (e.g., number, string, object) onto the stack
+			POP,        // Remove and discard the top value from the stack
 			DUP,        // Duplicate the top element of the stack
 			SWAP,       // Swap the top two elements of the stack
 			ROT,        // Rotate the top three elements of the stack
@@ -36,9 +38,8 @@ namespace BVM
 
 			// Object Manipulation
 			NEW_OBJECT, // Create a new object
-			GET_FIELD,  // Get a field from an object
-			SET_FIELD,  // Set a field on an object
-			INVOKE,     // Invoke a method on an object
+			GET_ATTR,  // Get a attribute from an object
+			SET_ATTR,  // Set a attribute on an object
 
 			// Comparison
 			EQ,         // Check if two objects are equal

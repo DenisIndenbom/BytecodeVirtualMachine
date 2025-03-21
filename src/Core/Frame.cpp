@@ -20,14 +20,19 @@ namespace BVM
 		{}
 
 		// Getters
-		Frame* Frame::getPrevFrame()
+		Frame* Frame::getPrevFrame() const
 		{
 			return _prevFrame;
 		}
 
-		std::shared_ptr<Object::CodeObject> Frame::getCode()
+		std::shared_ptr<Object::CodeObject> Frame::getCode() const
 		{
 			return _code;
+		}
+
+		size_t Frame::depth() const
+		{
+			return _depth;
 		}
 
 		// Setters

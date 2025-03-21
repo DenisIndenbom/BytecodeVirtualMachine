@@ -27,8 +27,10 @@ namespace BVM
 				{
 					executeInstruction(_currentFrame->next());
 				}
-				catch (Exception e) 
+				catch (Exception e)
 				{
+					std::cout << e.what();
+
 					break;
 				}
 			}
@@ -38,14 +40,14 @@ namespace BVM
 		{
 			switch (instruction.type)
 			{
-			// Stack operations
+				// Stack operations
 			case InstructionType::PUSH_CONST:
 			{
 				_currentFrame->pushConst(instruction.arg);
 
 				break;
 			}
-			case InstructionType::POP: 
+			case InstructionType::POP:
 			{
 				_currentFrame->pop();
 
@@ -54,8 +56,8 @@ namespace BVM
 			case InstructionType::DUP:
 			{
 				std::shared_ptr<Object::IObject> top = _currentFrame->top();
-				
-				_currentFrame->push(top);
+
+				_currentFrame->push(top); // Duplicate element
 
 				break;
 			}
@@ -64,6 +66,7 @@ namespace BVM
 				std::shared_ptr<Object::IObject> first = _currentFrame->top();
 				std::shared_ptr<Object::IObject> second = _currentFrame->top();
 
+				// Swap elements of the stack
 				_currentFrame->push(first);
 				_currentFrame->push(second);
 
@@ -75,7 +78,7 @@ namespace BVM
 				std::shared_ptr<Object::IObject> second = _currentFrame->top();
 				std::shared_ptr<Object::IObject> third = _currentFrame->top();
 
-
+				// Swap the first and the third elements of the stack
 				_currentFrame->push(first);
 				_currentFrame->push(second);
 				_currentFrame->push(third);
@@ -87,75 +90,76 @@ namespace BVM
 				std::shared_ptr<Object::IObject> first = _currentFrame->top();
 				std::shared_ptr<Object::IObject> second = _currentFrame->top();
 
-				// Keep same order
+				// Keep the same order
 				_currentFrame->push(second);
 				_currentFrame->push(first);
 
 				// Copy the second element from the top of the stack
-				_currentFrame->push(second); 
+				_currentFrame->push(second);
 
 				break;
 			}
 			// Math operations
 			case InstructionType::ADD:
 			{
-				std::shared_ptr<Object::IObject> right = _currentFrame->pop();
-				std::shared_ptr<Object::IObject> left = _currentFrame->pop();
+				_binaryOp([](auto lhs, auto rhs) { return lhs->add(rhs); });
 
-				_currentFrame->push(right->add(left));
-				
 				break;
 			}
 			case InstructionType::SUB:
 			{
-				std::shared_ptr<Object::IObject> right = _currentFrame->pop();
-				std::shared_ptr<Object::IObject> left = _currentFrame->pop();
-
-				_currentFrame->push(right->subtract(left));
+				_binaryOp([](auto lhs, auto rhs) { return lhs->subtract(rhs); });
 
 				break;
 			}
 			case InstructionType::MUL:
 			{
-				std::shared_ptr<Object::IObject> right = _currentFrame->pop();
-				std::shared_ptr<Object::IObject> left = _currentFrame->pop();
-
-				_currentFrame->push(right->multiply(left));
+				_binaryOp([](auto lhs, auto rhs) { return lhs->multiply(rhs); });
 
 				break;
 			}
 			case InstructionType::DIV:
 			{
-				std::shared_ptr<Object::IObject> right = _currentFrame->pop();
-				std::shared_ptr<Object::IObject> left = _currentFrame->pop();
-
-				_currentFrame->push(right->divide(left));
+				_binaryOp([](auto lhs, auto rhs) { return lhs->divide(rhs); });
 
 				break;
 			}
-			// Frame operations
+			// Control Flow
+			case InstructionType::CALL:
+			{
+				std::shared_ptr<Object::CodeObject> codeObj = std::dynamic_pointer_cast<Object::CodeObject>(_currentFrame->top());
+
+				if (!codeObj)
+					throw TypeException("Object is not callable");
+
+				_currentFrame = new Frame(codeObj, _currentFrame, _currentFrame->depth());
+
+				break;
+			}
 			case InstructionType::RETURN:
 			{
 				std::shared_ptr<Object::IObject> obj = _currentFrame->pop();
-				
+
 				_popFrame();
-				
+
 				if (_currentFrame == nullptr)
 					break; // Exit from switch if program returned from the last frame
 
 				_currentFrame->push(obj);
-				
+
 				break;
 			}
 			case InstructionType::PRINT:
 			{
 				std::cout << _currentFrame->pop()->toString() << '\n';
+
 				break;
 			}
 			// Debugging/Utility
 			case InstructionType::HALT:
 			{
 				_isRunning = false; // Change the running state to false
+
 				break;
 			}
 			default:
@@ -176,6 +180,21 @@ namespace BVM
 		{
 			frame->setPrevFrame(_currentFrame);
 			_currentFrame = frame;
+		}
+
+		void VM::_unaryOp(std::shared_ptr<Object::IObject>(*operation)(std::shared_ptr<Object::IObject>))
+		{
+			std::shared_ptr<Object::IObject> top = _currentFrame->pop();
+
+			_currentFrame->push(operation(top));
+		}
+
+		void VM::_binaryOp(std::shared_ptr<Object::IObject>(*operation)(std::shared_ptr<Object::IObject>, std::shared_ptr<Object::IObject>))
+		{
+			std::shared_ptr<Object::IObject> rhs = _currentFrame->pop();
+			std::shared_ptr<Object::IObject> lhs = _currentFrame->pop();
+
+			_currentFrame->push(operation(lhs, rhs));
 		}
 
 	}

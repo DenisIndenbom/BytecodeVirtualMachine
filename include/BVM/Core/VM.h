@@ -27,9 +27,13 @@ namespace BVM
 			// VM states
 			bool _isRunning;
 
-			// Framge management
+			// Frame management
 			void _popFrame();
 			void _pushFrame(Frame* frame);
+
+			// Operation handlers
+			void _unaryOp(std::shared_ptr<Object::IObject>(*operation)(std::shared_ptr<Object::IObject>));
+			void _binaryOp(std::shared_ptr<Object::IObject>(*operation)(std::shared_ptr<Object::IObject>, std::shared_ptr<Object::IObject>));
 		};
 	}
 }

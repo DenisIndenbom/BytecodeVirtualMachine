@@ -19,8 +19,9 @@ namespace BVM
 			~Frame() = default;
 
 			// Getters
-			Frame* getPrevFrame();
-			std::shared_ptr<Object::CodeObject> getCode();
+			Frame* getPrevFrame() const;
+			std::shared_ptr<Object::CodeObject> getCode() const;
+			size_t depth() const;
 
 			// Setters
 			void setPrevFrame(Frame* frame);

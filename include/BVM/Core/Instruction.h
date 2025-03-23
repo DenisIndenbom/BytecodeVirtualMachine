@@ -69,6 +69,7 @@ namespace BVM
 			InstructionType type;
 			uint8_t arg;
 
+			Instruction() = default;
 			Instruction(InstructionType type, uint8_t arg) : type(type), arg(arg) {}
 			~Instruction() = default;
 		};

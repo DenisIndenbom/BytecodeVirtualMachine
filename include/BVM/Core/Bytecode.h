@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <memory>
 
 #include <BVM/Core/Instruction.h>
 
@@ -11,16 +11,23 @@ namespace BVM
 		class Bytecode
 		{
 		public:
-			Bytecode();
+			// Constructors
+			Bytecode() = default;
+			Bytecode(std::unique_ptr<Instruction[]>& instructions, size_t length);
+			Bytecode(const std::initializer_list<Instruction>& instrucions);
+
+			// Deconstructor 
 			~Bytecode() = default;
+
+			// Copy constructor
+			Bytecode(const Bytecode& other);
 
 			size_t length() const;
 
-			void add(const Instruction& instruction);
-
 			const Instruction& operator[](size_t index) const;
 		private:
-			std::vector<Instruction> _bytecode;
+			std::unique_ptr<Instruction[]> _instructions;
+			size_t _length;
 		};
 	}
 }

@@ -6,6 +6,8 @@
 #include <BVM/Object/Object.h>
 #include <BVM/Object/CodeObject.h>
 
+#include <BVM/Core/Instruction.h>
+
 namespace BVM
 {
 	namespace Core

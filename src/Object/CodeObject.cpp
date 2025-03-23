@@ -139,5 +139,5 @@ namespace BVM
 			return "CodeObject(locals=" + std::to_string(_localsNum) + ", constants=" + std::to_string(_constants.size()) + ")";
 		}
 
-	} // namespace Object
-} // namespace BVM
+	}
+}

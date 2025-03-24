@@ -11,20 +11,29 @@ namespace BVM
 		class Bytecode
 		{
 		public:
-			// Constructors
 			Bytecode() = default;
-			Bytecode(std::unique_ptr<Instruction[]>& instructions, size_t length);
+			Bytecode(std::unique_ptr<Instruction[]> instructions, size_t length);
 			Bytecode(const std::initializer_list<Instruction>& instrucions);
-
-			// Deconstructor 
 			~Bytecode() = default;
 
-			// Copy constructor
+			// Copy
 			Bytecode(const Bytecode& other);
+			Bytecode& operator=(const Bytecode& other);
+
+			// Move
+			Bytecode(Bytecode&&) noexcept = default;
+			Bytecode& operator=(Bytecode&&) noexcept = default;
+
+			// Swap
+			void swap(Bytecode& other) noexcept;
 
 			size_t length() const;
 
 			const Instruction& operator[](size_t index) const;
+
+			// Iterators
+			const Instruction* begin() const noexcept;
+			const Instruction* end() const noexcept;
 		private:
 			std::unique_ptr<Instruction[]> _instructions;
 			size_t _length;

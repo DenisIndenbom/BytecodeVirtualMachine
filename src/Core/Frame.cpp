@@ -75,10 +75,14 @@ namespace BVM
 			_stack.push(_locals[index]);
 		}
 
-		void Frame::store(const std::shared_ptr<Object::IObject>& obj, size_t index)
+		void Frame::store(size_t index)
 		{
 			if (index >= _code->getLocalsNum())
 				throw LocalsException("Local variable with index " + std::to_string(index) + " was not found");
+
+			std::shared_ptr<Object::IObject> obj = _stack.top();
+
+			_stack.pop();
 
 			_locals[index] = obj;
 		}

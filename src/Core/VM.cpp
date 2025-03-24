@@ -29,7 +29,7 @@ namespace BVM
 				}
 				catch (Exception e)
 				{
-					std::cout << e.what();
+					std::cerr << e.what();
 
 					break;
 				}
@@ -99,7 +99,32 @@ namespace BVM
 
 				break;
 			}
-			// Math operations
+			// Memory/Storage
+			case InstructionType::LOAD:
+			{
+				_currentFrame->load(instruction.arg);
+
+				break;
+			}
+			case InstructionType::STORE:
+			{
+				_currentFrame->store(instruction.arg);
+
+				break;
+			}
+			case InstructionType::LOAD_GLOBAL:
+			{
+				_rootFrame->load(instruction.arg);
+
+				break;
+			}
+			case InstructionType::STORE_GLOBAL:
+			{
+				_rootFrame->store(instruction.arg);
+
+				break;
+			}
+			// Arithmetic
 			case InstructionType::ADD:
 			{
 				_binaryOp([](auto lhs, auto rhs) { return lhs->add(rhs); });
@@ -121,6 +146,68 @@ namespace BVM
 			case InstructionType::DIV:
 			{
 				_binaryOp([](auto lhs, auto rhs) { return lhs->divide(rhs); });
+
+				break;
+			}
+			// Comparison
+			case InstructionType::EQ:
+			{
+				_binaryOp([](auto lhs, auto rhs) { return lhs->equal(rhs); });
+
+				break;
+			}
+			case InstructionType::NEQ:
+			{
+				_binaryOp([](auto lhs, auto rhs) { return lhs->notEqual(rhs); });
+
+				break;
+			}
+			case InstructionType::LT:
+			{
+				_binaryOp([](auto lhs, auto rhs) { return lhs->less(rhs); });
+
+				break;
+			}
+			case InstructionType::GT:
+			{
+				_binaryOp([](auto lhs, auto rhs) { return lhs->greater(rhs); });
+
+				break;
+			}
+			case InstructionType::LTE:
+			{
+				_binaryOp([](auto lhs, auto rhs) { return lhs->lessOrEqual(rhs); });
+
+				break;
+			}
+			case InstructionType::GTE:
+			{
+				_binaryOp([](auto lhs, auto rhs) { return lhs->greaterOrEqual(rhs); });
+
+				break;
+			}
+			// Logical
+			case InstructionType::AND:
+			{
+				_binaryOp([](auto lhs, auto rhs) { return lhs->logicalAnd(rhs); });
+
+				break;
+			}
+			case InstructionType::OR:
+			{
+				_binaryOp([](auto lhs, auto rhs) { return lhs->logicalOr(rhs); });
+
+				break;
+			}
+			case InstructionType::XOR:
+			{
+				_binaryOp([](auto lhs, auto rhs) { return lhs->logicalXor(rhs); });
+
+				break;
+			}
+			case InstructionType::NOT:
+			{
+				_unaryOp([](auto operand) { return operand->logicalNot(); });
 
 				break;
 			}

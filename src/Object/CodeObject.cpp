@@ -17,9 +17,7 @@ namespace BVM
 		const Core::Instruction& CodeObject::getInstruction(size_t index) const
 		{
 			if (index >= _bytecode.length())
-			{
 				throw Core::OutOfBoundsException("Instruction index " + std::to_string(index) + " is out of bounds.");
-			}
 
 			return _bytecode[index];
 		}
@@ -27,9 +25,7 @@ namespace BVM
 		const std::shared_ptr<IObject>& CodeObject::getConstant(size_t index) const
 		{
 			if (index >= _constants.size())
-			{
 				throw Core::OutOfBoundsException("Constant index " + std::to_string(index) + " is out of bounds.");
-			}
 
 			return _constants[index];
 		}

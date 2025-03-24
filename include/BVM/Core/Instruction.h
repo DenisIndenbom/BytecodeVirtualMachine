@@ -7,6 +7,14 @@ namespace BVM
 		// All possible bytecode instructions
 		enum class InstructionType
 		{
+			// Stack Manipulation
+			PUSH_CONST, // Push a constant value (e.g., number, string, object) onto the stack
+			POP,        // Remove and discard the top value from the stack
+			DUP,        // Duplicate the top element of the stack
+			SWAP,       // Swap the top two elements of the stack
+			ROT,        // Rotate the top three elements of the stack
+			OVER,       // Copy the second element from the top of the stack
+			
 			// Arithmetic
 			ADD,        // Pop the top two values, add them, and push the result onto the stack
 			SUB,        // Pop the top two values, subtract the second from the first, and push the result
@@ -21,14 +29,6 @@ namespace BVM
 			JUMP_IF_FALSE, // Jump if the top of the stack is false
 			CALL,       // Call a function
 			RETURN,     // Return from a function
-
-			// Stack Manipulation
-			PUSH_CONST, // Push a constant value (e.g., number, string, object) onto the stack
-			POP,        // Remove and discard the top value from the stack
-			DUP,        // Duplicate the top element of the stack
-			SWAP,       // Swap the top two elements of the stack
-			ROT,        // Rotate the top three elements of the stack
-			OVER,       // Copy the second element from the top of the stack
 
 			// Memory/Storage
 			LOAD,       // Load a value from memory
@@ -52,6 +52,7 @@ namespace BVM
 			// Logical
 			AND,        // Logical AND
 			OR,         // Logical OR
+			XOR,        // Logical XOR
 			NOT,        // Logical NOT
 
 			// Type Conversion

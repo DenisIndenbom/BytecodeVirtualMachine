@@ -37,7 +37,7 @@ namespace BVM
 
 			// Locals operations
 			void load(size_t index);
-			void store(const std::shared_ptr<Object::IObject>& obj, size_t index);
+			void store(size_t index);
 
 			// Code object operations
 			const Instruction& next();

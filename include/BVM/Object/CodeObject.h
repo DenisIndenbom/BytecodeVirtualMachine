@@ -21,26 +21,6 @@ namespace BVM
 			const std::shared_ptr<IObject>& getConstant(size_t index) const;
 			size_t getLocalsNum() const;
 
-			// Implement all pure virtual functions from IObject
-			std::shared_ptr<IObject> add(const std::shared_ptr<IObject>& other) const override;
-			std::shared_ptr<IObject> subtract(const std::shared_ptr<IObject>& other) const override;
-			std::shared_ptr<IObject> multiply(const std::shared_ptr<IObject>& other) const override;
-			std::shared_ptr<IObject> divide(const std::shared_ptr<IObject>& other) const override;
-
-			std::shared_ptr<IObject> equal(const std::shared_ptr<IObject>& other) const override;
-			std::shared_ptr<IObject> notEqual(const std::shared_ptr<IObject>& other) const override;
-			std::shared_ptr<IObject> greater(const std::shared_ptr<IObject>& other) const override;
-			std::shared_ptr<IObject> greaterOrEqual(const std::shared_ptr<IObject>& other) const override;
-			std::shared_ptr<IObject> less(const std::shared_ptr<IObject>& other) const override;
-			std::shared_ptr<IObject> lessOrEqual(const std::shared_ptr<IObject>& other) const override;
-
-			std::shared_ptr<IObject> logicalAnd(const std::shared_ptr<IObject>& other) const override;
-			std::shared_ptr<IObject> logicalOr(const std::shared_ptr<IObject>& other) const override;
-			std::shared_ptr<IObject> logicalXor(const std::shared_ptr<IObject>& other) const override;
-			std::shared_ptr<IObject> logicalNot() const override;
-
-			std::shared_ptr<IObject> negate() const override;
-
 			// Type information
 			std::shared_ptr<IObject> clone() const override;
 			std::size_t hash() const override;

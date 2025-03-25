@@ -93,6 +93,14 @@ namespace BVM
 			{}
 		};
 
+		class AttributeException : public Exception
+		{
+		public:
+			explicit AttributeException(const std::string& message)
+				: Exception("Attribute Error: " + message)
+			{}
+		};
+
 		class MethodNotImplementedException : public Exception
 		{
 		public:

@@ -37,6 +37,23 @@ namespace BVM
 			{}
 		};
 
+		class ArgumentException : public Exception
+		{
+		public:
+			explicit ArgumentException(const std::string& message)
+				: Exception("Arguments: " + message)
+			{}
+
+			explicit ArgumentException(size_t index, size_t maxAllowed)
+				: Exception("Arguments: " + formatMessage(index, maxAllowed))
+			{}
+
+			static std::string formatMessage(size_t index, size_t maxAllowed)
+			{
+				return "Argument index " + std::to_string(index) + " is out of bounds (max " + std::to_string(maxAllowed) + ")";
+			}
+		};
+
 		class TypeException : public Exception
 		{
 		public:

@@ -47,6 +47,12 @@ namespace BVM
 
 				break;
 			}
+			case InstructionType::PUSH_ARG:
+			{
+				_currentFrame->pushArg(instruction.arg);
+
+				break;
+			}
 			case InstructionType::POP:
 			{
 				_currentFrame->pop();
@@ -214,12 +220,23 @@ namespace BVM
 			// Control Flow
 			case InstructionType::CALL:
 			{
-				std::shared_ptr<Object::CodeObject> codeObj = std::dynamic_pointer_cast<Object::CodeObject>(_currentFrame->top());
+				std::shared_ptr<Object::IObject> obj = _currentFrame->pop();
+
+				std::shared_ptr<Object::CodeObject> codeObj = std::dynamic_pointer_cast<Object::CodeObject>(obj->call());
 
 				if (!codeObj)
-					throw TypeException("Object is not callable");
+					throw TypeException("Callable object must return CodeObject when invoking the call method");
 
-				_currentFrame = new Frame(codeObj, _currentFrame, _currentFrame->depth());
+				if (codeObj->getArgumentsNum() != instruction.arg)
+					throw TypeException(obj->typeName() + " takes " + std::to_string(codeObj->getArgumentsNum()) + " positional arguments but " + std::to_string(instruction.arg) + " was given");
+				
+				_currentFrame = new Frame(codeObj, _currentFrame, _currentFrame->depth() + 1);
+
+				for (size_t i = 0; i < instruction.arg; ++i)
+				{
+					size_t arg_index = instruction.arg - 1 - i;
+					_currentFrame->setArgument(arg_index, _currentFrame->getPrevFrame()->pop());
+				}
 
 				break;
 			}

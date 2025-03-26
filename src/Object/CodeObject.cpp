@@ -5,8 +5,8 @@ namespace BVM
 {
 	namespace Object
 	{
-		CodeObject::CodeObject(const Core::Bytecode& bytecode, const std::vector<std::shared_ptr<IObject>>& constants, size_t localsNum)
-			: _bytecode(bytecode), _constants(constants), _localsNum(localsNum)
+		CodeObject::CodeObject(const Core::Bytecode& bytecode, const std::vector<std::shared_ptr<IObject>>& constants, size_t localsNum, size_t argumentsNum)
+			: _bytecode(bytecode), _constants(constants), _localsNum(localsNum), _argumentsNum(argumentsNum)
 		{}
 
 		const Core::Bytecode& CodeObject::getBytecode() const
@@ -17,7 +17,7 @@ namespace BVM
 		const Core::Instruction& CodeObject::getInstruction(size_t index) const
 		{
 			if (index >= _bytecode.length())
-				throw Core::OutOfBoundsException("Instruction index " + std::to_string(index) + " is out of bounds.");
+				throw Core::OutOfBoundsException("Instruction index " + std::to_string(index) + " is out of bounds");
 
 			return _bytecode[index];
 		}
@@ -25,7 +25,7 @@ namespace BVM
 		const std::shared_ptr<IObject>& CodeObject::getConstant(size_t index) const
 		{
 			if (index >= _constants.size())
-				throw Core::OutOfBoundsException("Constant index " + std::to_string(index) + " is out of bounds.");
+				throw Core::OutOfBoundsException("Constant index " + std::to_string(index) + " is out of bounds");
 
 			return _constants[index];
 		}
@@ -33,6 +33,11 @@ namespace BVM
 		size_t CodeObject::getLocalsNum() const
 		{
 			return _localsNum;
+		}
+
+		size_t CodeObject::getArgumentsNum() const
+		{
+			return _argumentsNum;
 		}
 
 		std::shared_ptr<IObject> CodeObject::clone() const
@@ -57,7 +62,7 @@ namespace BVM
 
 		std::string CodeObject::toString() const
 		{
-			return "CodeObject(locals=" + std::to_string(_localsNum) + ", constants=" + std::to_string(_constants.size()) + ")";
+			return "CodeObject(locals=" + std::to_string(_localsNum) + ", constants=" + std::to_string(_constants.size()) + ", locals=" + std::to_string(_localsNum) + ", arguments=" + std::to_string(_argumentsNum), +")";
 		}
 
 	}

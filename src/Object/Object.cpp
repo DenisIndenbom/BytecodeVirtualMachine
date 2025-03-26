@@ -84,6 +84,11 @@ namespace BVM
             throw Core::InvalidOperationException("Operation 'negate' not supported for type '" + typeName() + "'");
         }
 
+        std::shared_ptr<IObject> IObject::call() const
+        {
+            throw Core::TypeException(typeName() + " object is not callable");
+        }
+
         // Clone and representation
         std::shared_ptr<IObject> IObject::clone() const
         {

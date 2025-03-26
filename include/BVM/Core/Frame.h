@@ -22,15 +22,18 @@ namespace BVM
 
 			// Getters
 			Frame* getPrevFrame() const;
+			std::shared_ptr<Object::IObject> getArgument(size_t index) const;
 			std::shared_ptr<Object::CodeObject> getCode() const;
 			size_t depth() const;
 
 			// Setters
 			void setPrevFrame(Frame* frame);
+			void setArgument(size_t index, const std::shared_ptr<Object::IObject>& obj);
 
 			// Stack operations
 			void push(const std::shared_ptr<Object::IObject>& obj);
 			void pushConst(size_t index);
+			void pushArg(size_t index);
 
 			std::shared_ptr<Object::IObject> top();
 			std::shared_ptr<Object::IObject> pop();
@@ -50,6 +53,7 @@ namespace BVM
 
 			std::stack<std::shared_ptr<Object::IObject>> _stack; // Stack of objects in the frame
 			std::unique_ptr<std::shared_ptr<Object::IObject>[]> _locals; // Array of local variables in the frame
+			std::unique_ptr<std::shared_ptr<Object::IObject>[]> _arguments; // Array of local argument variables in the frame
 
 			size_t _index; // Current instruction index
 		};

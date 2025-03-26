@@ -8,7 +8,8 @@ namespace BVM
 		enum class InstructionType
 		{
 			// Stack Manipulation
-			PUSH_CONST, // Push a constant value (e.g., number, string, object) onto the stack
+			PUSH_CONST, // Push a constant object onto the stack
+			PUSH_ARG,   // Push an argument object onto the stack
 			POP,        // Remove and discard the top value from the stack
 			DUP,        // Duplicate the top element of the stack
 			SWAP,       // Swap the top two elements of the stack

@@ -13,7 +13,7 @@ namespace BVM
 		class CodeObject : public IObject
 		{
 		public:
-			CodeObject(const Core::Bytecode& bytecode, const std::vector<std::shared_ptr<IObject>>& constants, size_t localsNum = 0, size_t argumentsNum = 0);
+			explicit CodeObject(Core::Bytecode&& bytecode, std::vector<std::shared_ptr<IObject>>&& constants, size_t localsNum = 0, size_t argumentsNum = 0);
 
 			// Getters
 			const Core::Bytecode& getBytecode() const;
@@ -23,7 +23,6 @@ namespace BVM
 			size_t getArgumentsNum() const;
 
 			// Type information
-			std::shared_ptr<IObject> clone() const override;
 			std::size_t hash() const override;
 
 			std::string typeName() const override;

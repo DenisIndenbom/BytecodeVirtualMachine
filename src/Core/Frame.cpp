@@ -11,14 +11,14 @@ namespace BVM
 		// Constructors & Destructors
 		Frame::Frame(std::shared_ptr<Object::CodeObject> code, size_t depth)
 			: _code(code), _prevFrame(nullptr), _depth(depth), _index(0),
-			_locals(std::make_unique<std::shared_ptr<Object::IObject>[]>(_code->getLocalsNum())),
-			_arguments(std::make_unique<std::shared_ptr<Object::IObject>[]>(_code->getArgumentsNum()))
+			_locals(std::vector<std::shared_ptr<Object::IObject>>(_code->getLocalsNum())),
+			_arguments(std::vector<std::shared_ptr<Object::IObject>>(_code->getArgumentsNum()))
 		{}
 
 		Frame::Frame(std::shared_ptr<Object::CodeObject> code, Frame* prev, size_t depth)
 			: _code(code), _prevFrame(prev), _depth(depth), _index(0),
-			_locals(std::make_unique<std::shared_ptr<Object::IObject>[]>(_code->getLocalsNum())),
-			_arguments(std::make_unique<std::shared_ptr<Object::IObject>[]>(_code->getArgumentsNum()))
+			_locals(std::vector<std::shared_ptr<Object::IObject>>(_code->getLocalsNum())),
+			_arguments(std::vector<std::shared_ptr<Object::IObject>>(_code->getArgumentsNum()))
 		{}
 
 		// Getters
@@ -29,9 +29,9 @@ namespace BVM
 
 		std::shared_ptr<Object::IObject> Frame::getArgument(size_t index) const
 		{
-			if (index >= _code->getArgumentsNum())
+			if (index >= _arguments.size())
 				throw ArgumentException(index, _code->getArgumentsNum() - 1);
-			
+
 			return _arguments[index];
 		}
 
@@ -53,9 +53,9 @@ namespace BVM
 
 		void Frame::setArgument(size_t index, const std::shared_ptr<Object::IObject>& obj)
 		{
-			if (index >= _code->getArgumentsNum())
+			if (index >= _arguments.size())
 				throw ArgumentException(index, _code->getArgumentsNum() - 1);
-			
+
 			_arguments[index] = obj;
 		}
 
@@ -72,20 +72,23 @@ namespace BVM
 
 		void Frame::pushArg(size_t index)
 		{
-			if (index >= _code->getArgumentsNum())
+			if (index >= _arguments.size())
 				throw Core::OutOfBoundsException("Argument index " + std::to_string(index) + " is out of bounds");
-			
+
 			_stack.push(_arguments[index]);
 		}
 
 		std::shared_ptr<Object::IObject> Frame::top()
 		{
+			if (_stack.empty())
+				throw Core::StackUnderflowException("Attempted to access top element of an empty stack");
+
 			return _stack.top();
 		}
 
 		std::shared_ptr<Object::IObject> Frame::pop()
 		{
-			std::shared_ptr<Object::IObject> top = _stack.top();
+			std::shared_ptr<Object::IObject> top = this->top();
 
 			_stack.pop();
 
@@ -95,7 +98,7 @@ namespace BVM
 		// Locals operations
 		void Frame::load(size_t index)
 		{
-			if (index >= _code->getLocalsNum())
+			if (index >= _locals.size())
 				throw LocalsException("Local variable with index " + std::to_string(index) + " was not found");
 
 			_stack.push(_locals[index]);
@@ -103,7 +106,7 @@ namespace BVM
 
 		void Frame::store(size_t index)
 		{
-			if (index >= _code->getLocalsNum())
+			if (index >= _locals.size())
 				throw LocalsException("Local variable with index " + std::to_string(index) + " was not found");
 
 			std::shared_ptr<Object::IObject> obj = _stack.top();
@@ -125,7 +128,5 @@ namespace BVM
 
 			return _code->getBytecode()[_index];
 		}
-
-
 	}
 }

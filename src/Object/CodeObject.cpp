@@ -5,8 +5,11 @@ namespace BVM
 {
 	namespace Object
 	{
-		CodeObject::CodeObject(const Core::Bytecode& bytecode, const std::vector<std::shared_ptr<IObject>>& constants, size_t localsNum, size_t argumentsNum)
-			: _bytecode(bytecode), _constants(constants), _localsNum(localsNum), _argumentsNum(argumentsNum)
+		CodeObject::CodeObject(Core::Bytecode&& bytecode, std::vector<std::shared_ptr<IObject>>&& constants, size_t localsNum, size_t argumentsNum)
+			: _bytecode(std::move(bytecode)),
+			_constants(std::move(constants)),
+			_localsNum(localsNum),
+			_argumentsNum(argumentsNum)
 		{}
 
 		const Core::Bytecode& CodeObject::getBytecode() const
@@ -40,11 +43,6 @@ namespace BVM
 			return _argumentsNum;
 		}
 
-		std::shared_ptr<IObject> CodeObject::clone() const
-		{
-			return std::make_shared<CodeObject>(_bytecode, _constants, _localsNum);
-		}
-
 		std::size_t CodeObject::hash() const
 		{
 			return std::size_t(0); // TODO: Implement hashing of code object
@@ -62,8 +60,7 @@ namespace BVM
 
 		std::string CodeObject::toString() const
 		{
-			return "CodeObject(locals=" + std::to_string(_localsNum) + ", constants=" + std::to_string(_constants.size()) + ", locals=" + std::to_string(_localsNum) + ", arguments=" + std::to_string(_argumentsNum), +")";
+			return "CodeObject(constants=" + std::to_string(_constants.size()) + ", arguments=" + std::to_string(_argumentsNum), ", locals = " + std::to_string(_localsNum) + ")";
 		}
-
 	}
 }

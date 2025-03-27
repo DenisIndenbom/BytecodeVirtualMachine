@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stack>
+#include <vector>
 #include <memory>
 
 #include <BVM/Object/Object.h>
@@ -52,8 +53,8 @@ namespace BVM
 			size_t _depth; // The frame call depth
 
 			std::stack<std::shared_ptr<Object::IObject>> _stack; // Stack of objects in the frame
-			std::unique_ptr<std::shared_ptr<Object::IObject>[]> _locals; // Array of local variables in the frame
-			std::unique_ptr<std::shared_ptr<Object::IObject>[]> _arguments; // Array of local argument variables in the frame
+			std::vector<std::shared_ptr<Object::IObject>> _locals; // Array of local variables in the frame
+			std::vector<std::shared_ptr<Object::IObject>> _arguments; // Array of local argument variables in the frame
 
 			size_t _index; // Current instruction index
 		};

@@ -2,16 +2,19 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
 
 #include <BVM/Core/Instruction.h>
 #include <BVM/Core/Exceptions.h>
 #include <BVM/Object/Object.h>
+#include <BVM/Object/CodeObject.h>
 
 namespace BVM
 {
 	namespace Core
 	{
-		VM::VM(const std::shared_ptr<Object::CodeObject>& code) : _rootFrame(new Frame(code, 0)), _currentFrame(_rootFrame), _isRunning(true) {}
+		VM::VM(const std::shared_ptr<Object::CodeObject>& code) : _rootFrame(new Frame(code)), _currentFrame(_rootFrame)
+		{}
 
 		VM::~VM()
 		{
@@ -229,14 +232,13 @@ namespace BVM
 
 				if (codeObj->getArgumentsNum() != instruction.arg)
 					throw TypeException(obj->typeName() + " takes " + std::to_string(codeObj->getArgumentsNum()) + " positional arguments but " + std::to_string(instruction.arg) + " was given");
-				
-				_currentFrame = new Frame(codeObj, _currentFrame, _currentFrame->depth() + 1);
 
-				for (size_t i = 0; i < instruction.arg; ++i)
-				{
-					size_t arg_index = instruction.arg - 1 - i;
-					_currentFrame->setArgument(arg_index, _currentFrame->getPrevFrame()->pop());
-				}
+				std::vector<std::shared_ptr<Object::IObject>> args(instruction.arg);
+
+ 				for (size_t i = 0; i < instruction.arg; ++i)
+					args[instruction.arg - 1 - i] = _currentFrame->pop();
+
+				_currentFrame = new Frame(codeObj, _currentFrame, std::move(args), _currentFrame->depth() + 1);
 
 				break;
 			}

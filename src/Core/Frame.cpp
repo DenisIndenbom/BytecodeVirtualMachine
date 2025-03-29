@@ -10,29 +10,28 @@ namespace BVM
 	{
 		// Constructors & Destructors
 		Frame::Frame(std::shared_ptr<Object::CodeObject> code, size_t depth)
-			: _code(code), _prevFrame(nullptr), _depth(depth), _index(0),
+			: _code(code), _prevFrame(nullptr), _depth(depth),
 			_locals(std::vector<std::shared_ptr<Object::IObject>>(_code->getLocalsNum())),
 			_arguments(std::vector<std::shared_ptr<Object::IObject>>(_code->getArgumentsNum()))
 		{}
 
 		Frame::Frame(std::shared_ptr<Object::CodeObject> code, Frame* prev, size_t depth)
-			: _code(code), _prevFrame(prev), _depth(depth), _index(0),
+			: _code(code), _prevFrame(prev), _depth(depth),
 			_locals(std::vector<std::shared_ptr<Object::IObject>>(_code->getLocalsNum())),
 			_arguments(std::vector<std::shared_ptr<Object::IObject>>(_code->getArgumentsNum()))
+		{}
+
+		Frame::Frame(std::shared_ptr<Object::CodeObject> code, Frame* prev, std::vector<std::shared_ptr<Object::IObject>>&& args, size_t depth) 
+			: _code(code), _prevFrame(prev), _depth(depth),
+			_locals(std::vector<std::shared_ptr<Object::IObject>>(_code->getLocalsNum())),
+			_arguments(std::move(args))
+
 		{}
 
 		// Getters
 		Frame* Frame::getPrevFrame() const
 		{
 			return _prevFrame;
-		}
-
-		std::shared_ptr<Object::IObject> Frame::getArgument(size_t index) const
-		{
-			if (index >= _arguments.size())
-				throw ArgumentException(index, _code->getArgumentsNum() - 1);
-
-			return _arguments[index];
 		}
 
 		std::shared_ptr<Object::CodeObject> Frame::getCode() const
@@ -49,14 +48,6 @@ namespace BVM
 		void Frame::setPrevFrame(Frame* frame)
 		{
 			_prevFrame = frame;
-		}
-
-		void Frame::setArgument(size_t index, const std::shared_ptr<Object::IObject>& obj)
-		{
-			if (index >= _arguments.size())
-				throw ArgumentException(index, _code->getArgumentsNum() - 1);
-
-			_arguments[index] = obj;
 		}
 
 		// Stack operations

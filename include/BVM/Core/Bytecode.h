@@ -1,6 +1,6 @@
 #pragma once
 
-#include <memory>
+#include <vector>
 
 #include <BVM/Core/Instruction.h>
 
@@ -12,7 +12,7 @@ namespace BVM
 		{
 		public:
 			Bytecode() = default;
-			Bytecode(std::unique_ptr<Instruction[]> instructions, size_t length);
+			Bytecode(std::vector<Instruction>&& instructions);
 			Bytecode(const std::initializer_list<Instruction>& instrucions);
 			~Bytecode() = default;
 
@@ -35,8 +35,7 @@ namespace BVM
 			const Instruction* begin() const noexcept;
 			const Instruction* end() const noexcept;
 		private:
-			std::unique_ptr<Instruction[]> _instructions;
-			size_t _length;
+			std::vector<Instruction> _instructions;
 		};
 	}
 }

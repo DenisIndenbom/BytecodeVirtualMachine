@@ -9,16 +9,16 @@ namespace BVM
 {
 	namespace Core
 	{
-		Bytecode::Bytecode(std::unique_ptr<Instruction[]> instructions, size_t length) : _instructions(std::move(instructions)), _length(length) {}
+		Bytecode::Bytecode(std::vector<Instruction>&& instructions) : _instructions(std::move(instructions)) {}
 
-		Bytecode::Bytecode(const std::initializer_list<Instruction>& instructions) : _instructions(std::make_unique<Instruction[]>(instructions.size())), _length(instructions.size())
+		Bytecode::Bytecode(const std::initializer_list<Instruction>& instructions) : _instructions(std::vector<Instruction>(instructions.size()))
 		{
-			std::copy(instructions.begin(), instructions.end(), _instructions.get());
+			std::copy(instructions.begin(), instructions.end(), _instructions.begin());
 		}
 
-		Bytecode::Bytecode(const Bytecode& other) : _instructions(std::make_unique<Instruction[]>(other._length)), _length(other._length)
+		Bytecode::Bytecode(const Bytecode& other) : _instructions(std::vector<Instruction>(other.length()))
 		{
-			std::copy(other._instructions.get(), other._instructions.get() + other._length, _instructions.get());
+			std::copy(other.begin(), other.end(), _instructions.begin());
 		}
 
 		Bytecode& Bytecode::operator=(const Bytecode& other)
@@ -32,17 +32,16 @@ namespace BVM
 		void Bytecode::swap(Bytecode& other) noexcept
 		{
 			std::swap(_instructions, other._instructions);
-			std::swap(_length, other._length);
 		}
 
 		size_t Bytecode::length() const
 		{
-			return _length;
+			return _instructions.size();
 		}
 
 		const Instruction& Bytecode::operator[](size_t index) const
 		{
-			if (index >= _length)
+			if (index >= length())
 				throw InstructionsOverException("The instruction with the " + std::to_string(index) + " index was not found");
 
 			return _instructions[index];
@@ -50,12 +49,12 @@ namespace BVM
 
 		const Instruction* Bytecode::begin() const noexcept
 		{
-			return _instructions.get();
+			return _instructions.data();
 		}
 
 		const Instruction* Bytecode::end() const noexcept
 		{
-			return _instructions.get() + _length;
+			return _instructions.data() + length();
 		}
 	}
 }

@@ -17,8 +17,9 @@ namespace BVM
 		{
 		public:
 			// Constructors & Destructors
-			Frame(std::shared_ptr<Object::CodeObject> code, size_t depth);
-			Frame(std::shared_ptr<Object::CodeObject> code, Frame* _prev, size_t depth);
+			Frame(std::shared_ptr<Object::CodeObject> code, size_t depth = 0);
+			Frame(std::shared_ptr<Object::CodeObject> code, Frame* prev, size_t depth = 0);
+			Frame(std::shared_ptr<Object::CodeObject> code, Frame* prev, std::vector<std::shared_ptr<Object::IObject>>&& args, size_t depth = 0);
 			~Frame() = default;
 
 			// Getters
@@ -56,7 +57,7 @@ namespace BVM
 			std::vector<std::shared_ptr<Object::IObject>> _locals; // Array of local variables in the frame
 			std::vector<std::shared_ptr<Object::IObject>> _arguments; // Array of local argument variables in the frame
 
-			size_t _index; // Current instruction index
+			size_t _index = 0; // Current instruction index
 		};
 	}
 }

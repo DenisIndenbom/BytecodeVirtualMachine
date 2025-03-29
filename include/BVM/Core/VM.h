@@ -25,7 +25,7 @@ namespace BVM
 			Frame* _currentFrame;
 
 			// VM states
-			bool _isRunning;
+			bool _isRunning = true;
 
 			// Frame management
 			void _popFrame();

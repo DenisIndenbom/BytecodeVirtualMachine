@@ -11,6 +11,15 @@
 
 int main()
 {
+	/*
+		print(1 + 2)
+		
+		def f(a,b):
+			print(a,b)
+
+		print(f(1, 2))
+	*/
+	
 	BVM::Core::Bytecode bytecode
 	{
 		// Test 1

@@ -41,6 +41,7 @@ namespace BVM
 			NEW_OBJECT, // Create a new object
 			GET_ATTR,  // Get a attribute from an object
 			SET_ATTR,  // Set a attribute on an object
+			MAKE_FUNCTION, // Create a function from a CodeObject onto the top of the stack
 
 			// Comparison
 			EQ,         // Check if two objects are equal

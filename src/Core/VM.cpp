@@ -8,6 +8,7 @@
 #include <BVM/Core/Exceptions.h>
 #include <BVM/Object/Object.h>
 #include <BVM/Object/CodeObject.h>
+#include <BVM/Object/Function.h>
 
 namespace BVM
 {
@@ -252,6 +253,17 @@ namespace BVM
 					break; // Exit from switch if program returned from the last frame
 
 				_currentFrame->push(obj);
+
+				break;
+			}
+			case InstructionType::MAKE_FUNCTION:
+			{
+				std::shared_ptr<Object::CodeObject> codeObj = std::dynamic_pointer_cast<Object::CodeObject>(_currentFrame->pop());
+
+				if (!codeObj)
+					throw TypeException("Object onto the top of the stack must be a CodeObject");
+				
+				_currentFrame->push(std::make_shared<Object::Function>(codeObj));
 
 				break;
 			}

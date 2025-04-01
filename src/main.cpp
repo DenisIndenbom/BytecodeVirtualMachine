@@ -6,7 +6,6 @@
 #include <BVM/Core/VM.h>
 
 #include <BVM/Object/CodeObject.h>
-#include <BVM/Object/Function.h>
 #include <BVM/Object/Int.h>
 
 
@@ -17,15 +16,20 @@ int main()
 		// Test 1
 		BVM::Core::Instruction(BVM::Core::InstructionType::PUSH_CONST, 0),
 		BVM::Core::Instruction(BVM::Core::InstructionType::PUSH_CONST, 1),
-		BVM::Core::Instruction(BVM::Core::InstructionType::SUB, 0),
+		BVM::Core::Instruction(BVM::Core::InstructionType::SUB, 0), // Substract two objects
 		BVM::Core::Instruction(BVM::Core::InstructionType::PRINT, 0),
 
 		// Test 2
+		BVM::Core::Instruction(BVM::Core::InstructionType::PUSH_CONST, 2), // Load the code object
+		BVM::Core::Instruction(BVM::Core::InstructionType::MAKE_FUNCTION, 0),
+		BVM::Core::Instruction(BVM::Core::InstructionType::STORE, 0), // Store a function into memory
+
+		// Test 3
 		BVM::Core::Instruction(BVM::Core::InstructionType::PUSH_CONST, 0),
 		BVM::Core::Instruction(BVM::Core::InstructionType::PUSH_CONST, 1),
-		BVM::Core::Instruction(BVM::Core::InstructionType::PUSH_CONST, 2),
-		BVM::Core::Instruction(BVM::Core::InstructionType::CALL, 2),
-		BVM::Core::Instruction(BVM::Core::InstructionType::HALT, 0)
+		BVM::Core::Instruction(BVM::Core::InstructionType::LOAD, 0), // Load the function
+		BVM::Core::Instruction(BVM::Core::InstructionType::CALL, 2), // Call the function
+		BVM::Core::Instruction(BVM::Core::InstructionType::HALT, 0) // Stop execution
 	};
 
 	std::vector<std::shared_ptr<BVM::Object::IObject>> constants;
@@ -50,14 +54,11 @@ int main()
 	// Create CodeObject for function
 	auto funcCodeObj = std::make_shared<BVM::Object::CodeObject>(std::move(bytecodeFunc), std::move(funcConstants), 0, 2);
 
-	// Create function
-	auto function = std::make_shared<BVM::Object::Function>(funcCodeObj);
-
-	// Push function to constants
-	constants.push_back(function);
+	// Push function CodeObject to constants
+	constants.push_back(funcCodeObj);
 
 	// Create VM instance with CodeObject containing bytecode and constants
-	BVM::Core::VM vm(std::make_shared<BVM::Object::CodeObject>(std::move(bytecode), std::move(constants), 0));
+	BVM::Core::VM vm(std::make_shared<BVM::Object::CodeObject>(std::move(bytecode), std::move(constants), 1));
 
 	vm.run();
 

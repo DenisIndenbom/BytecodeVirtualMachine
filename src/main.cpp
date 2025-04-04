@@ -42,6 +42,7 @@ int main()
 	};
 
 	std::vector<std::shared_ptr<BVM::Object::IObject>> constants;
+	std::vector<std::string> names;
 
 	// Create shared pointers to Int objects, not IObject directly
 	constants.push_back(std::make_shared<BVM::Object::Int>(1));
@@ -59,15 +60,16 @@ int main()
 
 	// Create array of constants for function
 	std::vector<std::shared_ptr<BVM::Object::IObject>> funcConstants;
+	std::vector<std::string> funcNames;
 	
 	// Create CodeObject for function
-	auto funcCodeObj = std::make_shared<BVM::Object::CodeObject>(std::move(bytecodeFunc), std::move(funcConstants), 0, 2);
+	auto funcCodeObj = std::make_shared<BVM::Object::CodeObject>(std::move(bytecodeFunc), std::move(funcConstants), std::move(funcNames), 0, 2);
 
 	// Push function CodeObject to constants
 	constants.push_back(funcCodeObj);
 
 	// Create VM instance with CodeObject containing bytecode and constants
-	BVM::Core::VM vm(std::make_shared<BVM::Object::CodeObject>(std::move(bytecode), std::move(constants), 1));
+	BVM::Core::VM vm(std::make_shared<BVM::Object::CodeObject>(std::move(bytecode), std::move(constants), std::move(names), 1));
 
 	vm.run();
 

@@ -32,16 +32,16 @@ namespace BVM
 			RETURN,     // Return from a function
 
 			// Memory/Storage
-			LOAD,       // Load a value from memory
-			STORE,      // Store the top of the stack into memory
-			LOAD_GLOBAL, // Load a global value
-			STORE_GLOBAL, // Store the top of the stack into a global variable
+			LOAD,          // Load a value from memory
+			STORE,         // Store the top of the stack into memory
+			LOAD_GLOBAL,   // Load a global value
+			STORE_GLOBAL,  // Store the top of the stack into a global variable
 
 			// Object Manipulation
-			NEW_OBJECT, // Create a new object
-			GET_ATTR,  // Get a attribute from an object
-			SET_ATTR,  // Set a attribute on an object
-			MAKE_FUNCTION, // Create a function from a CodeObject onto the top of the stack
+			NEW_OBJECT,    // Create a new object
+			GET_ATTR,      // Get a attribute from an object
+			SET_ATTR,      // Set a attribute on an object
+			MAKE_FUNCTION, // Create a function from a CodeObject and push it onto the top of the stack
 
 			// Comparison
 			EQ,         // Check if two objects are equal

@@ -5,9 +5,10 @@ namespace BVM
 {
 	namespace Object
 	{
-		CodeObject::CodeObject(Core::Bytecode&& bytecode, std::vector<std::shared_ptr<IObject>>&& constants, size_t localsNum, size_t argumentsNum)
+		CodeObject::CodeObject(Core::Bytecode&& bytecode, std::vector<std::shared_ptr<IObject>>&& constants, std::vector<std::string>&& names, size_t localsNum, size_t argumentsNum)
 			: _bytecode(std::move(bytecode)),
 			_constants(std::move(constants)),
+			_names(std::move(names)),
 			_localsNum(localsNum),
 			_argumentsNum(argumentsNum)
 		{}
@@ -31,6 +32,14 @@ namespace BVM
 				throw Core::OutOfBoundsException("Constant index " + std::to_string(index) + " is out of bounds");
 
 			return _constants[index];
+		}
+
+		const std::string& CodeObject::getName(size_t index) const
+		{
+			if (index >= _names.size())
+				throw Core::OutOfBoundsException("Name index " + std::to_string(index) + " is out of bounds");
+
+			return _names[index];
 		}
 
 		size_t CodeObject::getLocalsNum() const

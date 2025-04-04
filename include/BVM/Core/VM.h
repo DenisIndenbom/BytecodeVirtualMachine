@@ -21,8 +21,8 @@ namespace BVM
 			void executeInstruction(const Instruction& instruction);
 		private:
 			// VM frames
-			Frame* _rootFrame;
-			Frame* _currentFrame;
+			Frame* _rootFrame; // Root frame
+			Frame* _currentFrame; // Current frame
 
 			// VM states
 			bool _isRunning = true;

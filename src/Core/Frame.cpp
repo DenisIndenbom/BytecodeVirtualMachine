@@ -15,13 +15,16 @@ namespace BVM
 			_arguments(std::vector<std::shared_ptr<Object::IObject>>(_code->getArgumentsNum()))
 		{}
 
-		Frame::Frame(std::shared_ptr<Object::CodeObject> code, Frame* prev, size_t depth)
+		Frame::Frame(std::shared_ptr<Object::CodeObject> code, const std::shared_ptr<Frame>& prev, size_t depth)
 			: _code(code), _prevFrame(prev), _depth(depth),
 			_locals(std::vector<std::shared_ptr<Object::IObject>>(_code->getLocalsNum())),
 			_arguments(std::vector<std::shared_ptr<Object::IObject>>(_code->getArgumentsNum()))
 		{}
 
-		Frame::Frame(std::shared_ptr<Object::CodeObject> code, Frame* prev, std::vector<std::shared_ptr<Object::IObject>>&& args, size_t depth) 
+		Frame::Frame(std::shared_ptr<Object::CodeObject> code,
+			const std::shared_ptr<Frame>& prev,
+			std::vector<std::shared_ptr<Object::IObject>>&& args,
+			size_t depth)
 			: _code(code), _prevFrame(prev), _depth(depth),
 			_locals(std::vector<std::shared_ptr<Object::IObject>>(_code->getLocalsNum())),
 			_arguments(std::move(args))
@@ -29,12 +32,12 @@ namespace BVM
 		{}
 
 		// Getters
-		Frame* Frame::getPrevFrame() const
+		std::shared_ptr<Frame> Frame::getPrevFrame() const noexcept
 		{
 			return _prevFrame;
 		}
 
-		std::shared_ptr<Object::CodeObject> Frame::getCode() const
+		std::shared_ptr<Object::CodeObject> Frame::getCode() const noexcept
 		{
 			return _code;
 		}
@@ -45,7 +48,7 @@ namespace BVM
 		}
 
 		// Setters
-		void Frame::setPrevFrame(Frame* frame)
+		void Frame::setPrevFrame(const std::shared_ptr<Frame>& frame)
 		{
 			_prevFrame = frame;
 		}
@@ -54,6 +57,11 @@ namespace BVM
 		void Frame::push(const std::shared_ptr<Object::IObject>& obj)
 		{
 			_stack.push(obj);
+		}
+
+		void Frame::push(std::shared_ptr<Object::IObject>&& obj)
+		{
+			_stack.push(std::move(obj));
 		}
 
 		void Frame::pushConst(size_t index)
@@ -113,11 +121,9 @@ namespace BVM
 			return _code->getBytecode()[_index++];
 		}
 
-		const Instruction& Frame::jump(size_t index)
+		void Frame::jump(size_t index)
 		{
 			_index = _code->getJumpPoint(index);
-
-			return _code->getBytecode()[_index];
 		}
 	}
 }

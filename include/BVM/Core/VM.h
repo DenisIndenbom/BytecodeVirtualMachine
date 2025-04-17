@@ -21,15 +21,15 @@ namespace BVM
 			void executeInstruction(const Instruction& instruction);
 		private:
 			// VM frames
-			Frame* _rootFrame; // Root frame
-			Frame* _currentFrame; // Current frame
+			std::shared_ptr<Frame> _rootFrame; // Root frame
+			std::shared_ptr<Frame> _currentFrame; // Current frame
 
 			// VM states
 			bool _isRunning = true;
 
 			// Frame management
 			void _popFrame();
-			void _pushFrame(Frame* frame);
+			void _pushFrame(const std::shared_ptr<Frame>& frame);
 
 			// Operation handlers
 			void _unaryOp(std::shared_ptr<Object::IObject>(*operation)(std::shared_ptr<Object::IObject>));

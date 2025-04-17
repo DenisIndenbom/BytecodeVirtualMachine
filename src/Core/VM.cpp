@@ -15,7 +15,7 @@ namespace BVM
 {
 	namespace Core
 	{
-		VM::VM(const std::shared_ptr<Object::CodeObject>& code) : _rootFrame(new Frame(code)), _currentFrame(_rootFrame)
+		VM::VM(const std::shared_ptr<Object::CodeObject>& code) : _rootFrame(std::make_shared<Frame>(code)), _currentFrame(_rootFrame)
 		{}
 
 		VM::~VM()
@@ -60,7 +60,7 @@ namespace BVM
 			}
 			case InstructionType::POP:
 			{
-				_currentFrame->pop();
+				auto top = _currentFrame->pop();
 
 				break;
 			}
@@ -68,42 +68,42 @@ namespace BVM
 			{
 				std::shared_ptr<Object::IObject> top = _currentFrame->top();
 
-				_currentFrame->push(top); // Duplicate element
+				_currentFrame->push(std::move(top)); // Duplicate element
 
 				break;
 			}
 			case InstructionType::SWAP:
 			{
-				std::shared_ptr<Object::IObject> first = _currentFrame->top();
-				std::shared_ptr<Object::IObject> second = _currentFrame->top();
+				std::shared_ptr<Object::IObject> first = _currentFrame->pop();
+				std::shared_ptr<Object::IObject> second = _currentFrame->pop();
 
 				// Swap elements of the stack
-				_currentFrame->push(first);
-				_currentFrame->push(second);
+				_currentFrame->push(std::move(first));
+				_currentFrame->push(std::move(second));
 
 				break;
 			}
 			case InstructionType::ROT:
 			{
-				std::shared_ptr<Object::IObject> first = _currentFrame->top();
-				std::shared_ptr<Object::IObject> second = _currentFrame->top();
-				std::shared_ptr<Object::IObject> third = _currentFrame->top();
+				std::shared_ptr<Object::IObject> first = _currentFrame->pop();
+				std::shared_ptr<Object::IObject> second = _currentFrame->pop();
+				std::shared_ptr<Object::IObject> third = _currentFrame->pop();
 
 				// Swap the first and the third elements of the stack
-				_currentFrame->push(first);
-				_currentFrame->push(second);
-				_currentFrame->push(third);
+				_currentFrame->push(std::move(first));
+				_currentFrame->push(std::move(second));
+				_currentFrame->push(std::move(third));
 
 				break;
 			}
 			case InstructionType::OVER:
 			{
-				std::shared_ptr<Object::IObject> first = _currentFrame->top();
-				std::shared_ptr<Object::IObject> second = _currentFrame->top();
+				std::shared_ptr<Object::IObject> first = _currentFrame->pop();
+				std::shared_ptr<Object::IObject> second = _currentFrame->pop();
 
 				// Keep the same order
 				_currentFrame->push(second);
-				_currentFrame->push(first);
+				_currentFrame->push(std::move(first));
 
 				// Copy the second element from the top of the stack
 				_currentFrame->push(second);
@@ -222,16 +222,16 @@ namespace BVM
 
 				break;
 			}
-			case InstructionType::JUMP: 
+			case InstructionType::JUMP:
 			{
 				_currentFrame->jump(instruction.arg);
-				
+
 				break;
 			}
 			case InstructionType::JUMP_IF_FALSE:
 			{
 				static const auto bFalse = std::make_shared<Object::Bool>(false);
-				
+
 				// Early exit if condition not met
 				if (!_currentFrame->pop()->equal(bFalse))
 					break;
@@ -243,7 +243,7 @@ namespace BVM
 			}
 			case InstructionType::JUMP_IF_TRUE:
 			{
-				static const auto bTrue = std::make_shared<Object::Bool>(false);
+				static const auto bTrue = std::make_shared<Object::Bool>(true);
 
 				// Early exit if condition not met
 				if (!_currentFrame->pop()->equal(bTrue))
@@ -269,10 +269,10 @@ namespace BVM
 
 				std::vector<std::shared_ptr<Object::IObject>> args(instruction.arg);
 
- 				for (size_t i = 0; i < instruction.arg; ++i)
+				for (size_t i = 0; i < instruction.arg; ++i)
 					args[instruction.arg - 1 - i] = _currentFrame->pop();
 
-				_currentFrame = new Frame(codeObj, _currentFrame, std::move(args), _currentFrame->depth() + 1);
+				_currentFrame = std::make_shared<Frame>(codeObj, _currentFrame, std::move(args), _currentFrame->depth() + 1);
 
 				break;
 			}
@@ -282,10 +282,8 @@ namespace BVM
 
 				_popFrame();
 
-				if (_currentFrame == nullptr)
-					break; // Exit from switch if program returned from the last frame
-
-				_currentFrame->push(obj);
+				if (_currentFrame)
+					_currentFrame->push(std::move(obj));
 
 				break;
 			}
@@ -295,8 +293,8 @@ namespace BVM
 
 				if (!codeObj)
 					throw TypeException("Object onto the top of the stack must be a CodeObject");
-				
-				_currentFrame->push(std::make_shared<Object::Function>(codeObj));
+
+				_currentFrame->push(std::move(std::make_shared<Object::Function>(codeObj)));
 
 				break;
 			}
@@ -320,16 +318,13 @@ namespace BVM
 
 		void VM::_popFrame()
 		{
-			Frame* prev = _currentFrame->getPrevFrame();
-
-			delete _currentFrame;
-
-			_currentFrame = prev;
+			_currentFrame = _currentFrame->getPrevFrame();
 		}
 
-		void VM::_pushFrame(Frame* frame)
+		void VM::_pushFrame(const std::shared_ptr<Frame>& frame)
 		{
 			frame->setPrevFrame(_currentFrame);
+
 			_currentFrame = frame;
 		}
 
@@ -337,7 +332,7 @@ namespace BVM
 		{
 			std::shared_ptr<Object::IObject> top = _currentFrame->pop();
 
-			_currentFrame->push(operation(top));
+			_currentFrame->push(std::move(operation(top)));
 		}
 
 		void VM::_binaryOp(std::shared_ptr<Object::IObject>(*operation)(std::shared_ptr<Object::IObject>, std::shared_ptr<Object::IObject>))
@@ -345,7 +340,7 @@ namespace BVM
 			std::shared_ptr<Object::IObject> rhs = _currentFrame->pop();
 			std::shared_ptr<Object::IObject> lhs = _currentFrame->pop();
 
-			_currentFrame->push(operation(lhs, rhs));
+			_currentFrame->push(std::move(operation(lhs, rhs)));
 		}
 	}
 }

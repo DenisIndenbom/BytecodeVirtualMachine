@@ -13,13 +13,13 @@ int main()
 {
 	/*
 		print(1 + 2)
-		
+
 		def f(a,b):
 			print(a,b)
 
 		print(f(1, 2))
 	*/
-	
+
 	BVM::Core::Bytecode bytecode
 	{
 		// Test 1
@@ -38,6 +38,13 @@ int main()
 		BVM::Core::Instruction(BVM::Core::InstructionType::PUSH_CONST, 1),
 		BVM::Core::Instruction(BVM::Core::InstructionType::LOAD, 0), // Load the function
 		BVM::Core::Instruction(BVM::Core::InstructionType::CALL, 2), // Call the function
+
+		// Test 4
+		BVM::Core::Instruction(BVM::Core::InstructionType::PUSH_CONST, 0),
+		BVM::Core::Instruction(BVM::Core::InstructionType::JUMP, 0), // Jump to PRINT instruction (*)
+		BVM::Core::Instruction(BVM::Core::InstructionType::PUSH_CONST, 1),
+		BVM::Core::Instruction(BVM::Core::InstructionType::PRINT, 0), // PRINT constant (*)
+
 		BVM::Core::Instruction(BVM::Core::InstructionType::HALT, 0) // Stop execution
 	};
 
@@ -61,15 +68,18 @@ int main()
 	// Create array of constants for function
 	std::vector<std::shared_ptr<BVM::Object::IObject>> funcConstants;
 	std::vector<std::string> funcNames;
-	
+	std::vector<std::size_t> funcJumpPoints = { 15 };
+
 	// Create CodeObject for function
-	auto funcCodeObj = std::make_shared<BVM::Object::CodeObject>(std::move(bytecodeFunc), std::move(funcConstants), std::move(funcNames), 0, 2);
+	auto funcCodeObj = std::make_shared<BVM::Object::CodeObject>(std::move(bytecodeFunc), std::move(funcConstants), std::move(funcNames), std::move(funcJumpPoints), 0, 2);
 
 	// Push function CodeObject to constants
 	constants.push_back(funcCodeObj);
 
+	std::vector<std::size_t> jumpPoints = { 14 };
+
 	// Create VM instance with CodeObject containing bytecode and constants
-	BVM::Core::VM vm(std::make_shared<BVM::Object::CodeObject>(std::move(bytecode), std::move(constants), std::move(names), 1));
+	BVM::Core::VM vm(std::make_shared<BVM::Object::CodeObject>(std::move(bytecode), std::move(constants), std::move(names), std::move(jumpPoints), 1));
 
 	vm.run();
 

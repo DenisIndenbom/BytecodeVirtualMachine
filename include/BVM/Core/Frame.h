@@ -1,11 +1,11 @@
 #pragma once
 
+#include <memory>
 #include <stack>
 #include <vector>
-#include <memory>
 
-#include <BVM/Object/Object.h>
 #include <BVM/Object/CodeObject.h>
+#include <BVM/Object/Object.h>
 
 #include <BVM/Core/Instruction.h>
 
@@ -24,13 +24,11 @@ namespace BVM
 
 			// Getters
 			Frame* getPrevFrame() const;
-			std::shared_ptr<Object::IObject> getArgument(size_t index) const;
 			std::shared_ptr<Object::CodeObject> getCode() const;
 			size_t depth() const;
 
 			// Setters
 			void setPrevFrame(Frame* frame);
-			void setArgument(size_t index, const std::shared_ptr<Object::IObject>& obj);
 
 			// Stack operations
 			void push(const std::shared_ptr<Object::IObject>& obj);
@@ -46,7 +44,7 @@ namespace BVM
 
 			// Code object operations
 			const Instruction& next();
-			const Instruction& jump(size_t shift);
+			const Instruction& jump(size_t index);
 
 		private:
 			Frame* _prevFrame; // The pointer to a previous frame in call stack

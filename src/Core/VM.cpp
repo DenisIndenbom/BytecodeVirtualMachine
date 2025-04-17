@@ -9,6 +9,7 @@
 #include <BVM/Object/Object.h>
 #include <BVM/Object/CodeObject.h>
 #include <BVM/Object/Function.h>
+#include <BVM/Object/Bool.h>
 
 namespace BVM
 {
@@ -221,6 +222,38 @@ namespace BVM
 
 				break;
 			}
+			case InstructionType::JUMP: 
+			{
+				_currentFrame->jump(instruction.arg);
+				
+				break;
+			}
+			case InstructionType::JUMP_IF_FALSE:
+			{
+				static const auto bFalse = std::make_shared<Object::Bool>(false);
+				
+				// Early exit if condition not met
+				if (!_currentFrame->pop()->equal(bFalse))
+					break;
+
+				// Perform jump if condition is met (value was false)
+				_currentFrame->jump(instruction.arg);
+
+				break;
+			}
+			case InstructionType::JUMP_IF_TRUE:
+			{
+				static const auto bTrue = std::make_shared<Object::Bool>(false);
+
+				// Early exit if condition not met
+				if (!_currentFrame->pop()->equal(bTrue))
+					break;
+
+				// Perform jump if condition is met (value was true)
+				_currentFrame->jump(instruction.arg);
+
+				break;
+			}
 			// Control Flow
 			case InstructionType::CALL:
 			{
@@ -314,6 +347,5 @@ namespace BVM
 
 			_currentFrame->push(operation(lhs, rhs));
 		}
-
 	}
 }

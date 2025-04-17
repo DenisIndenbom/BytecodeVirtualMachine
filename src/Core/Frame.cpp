@@ -113,9 +113,9 @@ namespace BVM
 			return _code->getBytecode()[_index++];
 		}
 
-		const Instruction& Frame::jump(size_t shift)
+		const Instruction& Frame::jump(size_t index)
 		{
-			_index += shift;
+			_index = _code->getJumpPoint(index);
 
 			return _code->getBytecode()[_index];
 		}

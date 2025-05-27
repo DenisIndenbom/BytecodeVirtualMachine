@@ -12,12 +12,21 @@
 int main()
 {
 	/*
-		print(1 + 2)
+		# Test 1
+		print(1 - 2)
 
+		# Test 2
 		def f(a,b):
-			print(a,b)
+			print(a, b)
 
+		# Test 3
 		print(f(1, 2))
+
+		# Test 4
+		PUSH 1
+		JMP *
+		PUSH 2
+		PRINT - *
 	*/
 
 	BVM::Core::Bytecode bytecode

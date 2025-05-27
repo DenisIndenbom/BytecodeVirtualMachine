@@ -41,8 +41,9 @@ namespace BVM
 
 		const Instruction& Bytecode::operator[](size_t index) const
 		{
-			if (index >= length())
+			if (index >= length()) {
 				throw InstructionsOverException("The instruction with the " + std::to_string(index) + " index was not found");
+			}
 
 			return _instructions[index];
 		}

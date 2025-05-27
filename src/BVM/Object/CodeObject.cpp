@@ -26,32 +26,36 @@ namespace BVM
 
 		const Core::Instruction& CodeObject::getInstruction(size_t index) const
 		{
-			if (index >= _bytecode.length())
+			if (index >= _bytecode.length()) {
 				throw Core::OutOfBoundsException("Instruction index " + std::to_string(index) + " is out of bounds");
+			}
 
 			return _bytecode[index];
 		}
 
 		const std::shared_ptr<IObject>& CodeObject::getConstant(size_t index) const
 		{
-			if (index >= _constants.size())
+			if (index >= _constants.size()) {
 				throw Core::OutOfBoundsException("Constant index " + std::to_string(index) + " is out of bounds");
+			}
 
 			return _constants[index];
 		}
 
 		const std::string& CodeObject::getName(size_t index) const
 		{
-			if (index >= _names.size())
+			if (index >= _names.size()) {
 				throw Core::OutOfBoundsException("Name index " + std::to_string(index) + " is out of bounds");
+			}
 
 			return _names[index];
 		}
 
 		size_t CodeObject::getJumpPoint(size_t index) const
 		{
-			if (index >= _jumpPoints.size())
+			if (index >= _jumpPoints.size()) {
 				throw Core::OutOfBoundsException("Jump point index " + std::to_string(index) + " is out of bounds");
+			}
 
 			return _jumpPoints[index];
 		}

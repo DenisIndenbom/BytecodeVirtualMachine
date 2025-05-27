@@ -20,20 +20,17 @@ namespace BVM
 
 		VM::~VM()
 		{
-			while (_currentFrame != nullptr)
+			while (_currentFrame != nullptr) {
 				_popFrame();
+			}
 		}
 
 		void VM::run()
 		{
-			while (_currentFrame != nullptr && _isRunning)
-			{
-				try
-				{
+			while (_currentFrame != nullptr && _isRunning) {
+				try {
 					executeInstruction(_currentFrame->next());
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					std::cerr << e.what();
 
 					break;
@@ -43,8 +40,7 @@ namespace BVM
 
 		void VM::executeInstruction(const Instruction& instruction)
 		{
-			switch (instruction.type)
-			{
+			switch (instruction.type) {
 				// Stack operations
 			case InstructionType::PUSH_CONST:
 			{
@@ -233,8 +229,9 @@ namespace BVM
 				static const auto bFalse = std::make_shared<Object::Bool>(false);
 
 				// Early exit if condition not met
-				if (!_currentFrame->pop()->equal(bFalse))
+				if (!_currentFrame->pop()->equal(bFalse)) {
 					break;
+				}
 
 				// Perform jump if condition is met (value was false)
 				_currentFrame->jump(instruction.arg);
@@ -246,8 +243,9 @@ namespace BVM
 				static const auto bTrue = std::make_shared<Object::Bool>(true);
 
 				// Early exit if condition not met
-				if (!_currentFrame->pop()->equal(bTrue))
+				if (!_currentFrame->pop()->equal(bTrue)) {
 					break;
+				}
 
 				// Perform jump if condition is met (value was true)
 				_currentFrame->jump(instruction.arg);
@@ -261,16 +259,19 @@ namespace BVM
 
 				std::shared_ptr<Object::CodeObject> codeObj = std::dynamic_pointer_cast<Object::CodeObject>(obj->call());
 
-				if (!codeObj)
+				if (!codeObj) {
 					throw TypeException("Callable object must return CodeObject when invoking the call method");
+				}
 
-				if (codeObj->getArgumentsNum() != instruction.arg)
+				if (codeObj->getArgumentsNum() != instruction.arg) {
 					throw TypeException(obj->typeName() + " takes " + std::to_string(codeObj->getArgumentsNum()) + " positional arguments but " + std::to_string(instruction.arg) + " was given");
+				}
 
 				std::vector<std::shared_ptr<Object::IObject>> args(instruction.arg);
 
-				for (size_t i = 0; i < instruction.arg; ++i)
+				for (size_t i = 0; i < instruction.arg; ++i) {
 					args[instruction.arg - 1 - i] = _currentFrame->pop();
+				}
 
 				_currentFrame = std::make_shared<Frame>(codeObj, _currentFrame, std::move(args), _currentFrame->depth() + 1);
 
@@ -282,8 +283,9 @@ namespace BVM
 
 				_popFrame();
 
-				if (_currentFrame)
+				if (_currentFrame) {
 					_currentFrame->push(std::move(obj));
+				}
 
 				break;
 			}
@@ -291,8 +293,9 @@ namespace BVM
 			{
 				std::shared_ptr<Object::CodeObject> codeObj = std::dynamic_pointer_cast<Object::CodeObject>(_currentFrame->pop());
 
-				if (!codeObj)
+				if (!codeObj) {
 					throw TypeException("Object onto the top of the stack must be a CodeObject");
+				}
 
 				_currentFrame->push(std::move(std::make_shared<Object::Function>(codeObj)));
 

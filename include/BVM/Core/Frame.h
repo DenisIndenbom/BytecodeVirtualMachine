@@ -48,7 +48,7 @@ namespace BVM
 			void store(size_t index);
 
 			// Code object operations
-			[[nodiscard]]  const Instruction& next();
+			[[nodiscard]] const Instruction& next();
 			void jump(size_t index);
 
 		private:

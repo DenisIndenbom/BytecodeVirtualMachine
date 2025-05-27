@@ -71,16 +71,18 @@ namespace BVM
 
 		void Frame::pushArg(size_t index)
 		{
-			if (index >= _arguments.size())
+			if (index >= _arguments.size()) {
 				throw Core::OutOfBoundsException("Argument index " + std::to_string(index) + " is out of bounds");
+			}
 
 			_stack.push(_arguments[index]);
 		}
 
 		std::shared_ptr<Object::IObject> Frame::top()
 		{
-			if (_stack.empty())
+			if (_stack.empty()) {
 				throw Core::StackUnderflowException("Attempted to access top element of an empty stack");
+			}
 
 			return _stack.top();
 		}
@@ -97,16 +99,18 @@ namespace BVM
 		// Locals operations
 		void Frame::load(size_t index)
 		{
-			if (index >= _locals.size())
+			if (index >= _locals.size()) {
 				throw LocalsException("Local variable with index " + std::to_string(index) + " was not found");
+			}
 
 			_stack.push(_locals[index]);
 		}
 
 		void Frame::store(size_t index)
 		{
-			if (index >= _locals.size())
+			if (index >= _locals.size()) {
 				throw LocalsException("Local variable with index " + std::to_string(index) + " was not found");
+			}
 
 			std::shared_ptr<Object::IObject> obj = _stack.top();
 
